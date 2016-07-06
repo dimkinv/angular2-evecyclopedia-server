@@ -16,8 +16,8 @@ exports.router.get('/', function (req, res) {
     res.json(group.races);
 });
 exports.router.get('/:raceId', function (req, res) {
-    var group = _.find(jsonData, { name: req.params.groupId });
-    console.log(group);
+    var groups = JSON.parse(data_storage_1.data);
+    var group = _.find(groups, { name: req.params.groupId });
     if (!group) {
         res.status(404).end();
         return;

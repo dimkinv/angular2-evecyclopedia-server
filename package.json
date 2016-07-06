@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "parallelshell 'nodemon ./bin/www' 'tsc -p . --watch'"
+    "start": "nodemon ./bin/www & tsc -p . --watch"
   },
   "dependencies": {
     "body-parser": "~1.13.2",
@@ -17,6 +17,9 @@
     "serve-favicon": "~2.3.0"
   },
   "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-nodemon": "^2.1.0",
+    "gulp-typescript": "^2.13.6",
     "parallelshell": "^2.0.0",
     "tsc": "^1.20150623.0"
   }
