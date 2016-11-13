@@ -2,6 +2,7 @@ import * as express from 'express'
 import {data} from '../data-import/data-storage'
 import * as _ from 'lodash'
 import {IGroup} from '../data-import/data-import'
+import {router as shipsRouter} from './ships'
 
 export var router = express.Router({mergeParams: true});
 
@@ -30,4 +31,6 @@ router.get('/:raceId', (req:express.Request, res:express.Response)=>{
     var race = _.find(group.races, {name: req.params.raceId});
     res.json(race);
 });
+
+router.use('/:raceId/ships', shipsRouter);
 
