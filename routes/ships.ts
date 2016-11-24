@@ -3,6 +3,7 @@ import * as _ from 'lodash'
 import {data} from '../data-import/data-storage'
 import {IGroup} from '../data-import/data-import'
 import * as path from 'path';
+import * as request from 'request';
 
 var shipNameToImageId = require('../public/ship-name-to-image-id.json');
 
@@ -30,12 +31,13 @@ router.get('/:shipId', (req: express.Request, res: express.Response)=> {
 });
 
 router.get('/:shipName/image', (req: express.Request, res: express.Response)=> {
-    let imageId = shipNameToImageId[req.params.shipName];
-    if(imageId){
-        res.redirect(`https://image.eveonline.com/Render/${imageId}_512.png`);
-    }else{
-        res.redirect('https://image.eveonline.com/Render/1_512.png');
-    }
+    request.get({url: 'https://www.fuzzwork.co.uk/api/typeid.php?typename='+req.params.shipName, json: true}, (error, response, body) => {
+        if(body && body.typeID){
+            res.redirect(`https://image.eveonline.com/Render/${body.typeID}_512.png`);
+        }else{
+            res.redirect(`https://image.eveonline.com/Render/1_512.png`);
+        }
+    });
 });
 
 router.post('/', (req: express.Request, res: express.Response)=> {
