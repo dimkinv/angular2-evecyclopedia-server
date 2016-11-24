@@ -2,6 +2,9 @@ import * as express from 'express'
 import * as _ from 'lodash'
 import {data} from '../data-import/data-storage'
 import {IGroup} from '../data-import/data-import'
+import * as path from 'path';
+
+var shipNameToImageId = require('../public/ship-name-to-image-id.json');
 
 export let router = express.Router({mergeParams: true});
 var result: Array<IGroup> = JSON.parse(data);
@@ -24,6 +27,15 @@ router.get('/:shipId', (req: express.Request, res: express.Response)=> {
     let race = findRace(result, req);
 
     res.send(_.find(race.ships, {name: req.params.shipId}));
+});
+
+router.get('/:shipName/image', (req: express.Request, res: express.Response)=> {
+    let imageId = shipNameToImageId[req.params.shipName];
+    if(imageId){
+        res.redirect(`https://image.eveonline.com/Render/${imageId}_512.png`);
+    }else{
+        res.redirect('https://image.eveonline.com/Render/1_512.png');
+    }
 });
 
 router.post('/', (req: express.Request, res: express.Response)=> {
