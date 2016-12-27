@@ -32,11 +32,55 @@ exports.router.get('/:shipName/image', function (req, res) {
     });
 });
 exports.router.post('/', function (req, res) {
-    var race = findRace(result, req);
-    req.body.race = req.params.raceId;
-    req.body.group = req.params.groupId;
+    var group = _.find(result, function (group) {
+        return group.name === req.body.group;
+    });
+    if (!group) {
+        res.status(400).end("group " + req.body.group + " not found");
+        return;
+    }
+    var race = _.find(group.races, function (race) {
+        return race.name === req.body.race;
+    });
+    if (!race) {
+        res.status(400).end("race " + req.body.race + " not found");
+        return;
+    }
+    var ship = _.find(race.ships, function (ship) {
+        return ship.name === req.body.name;
+    });
+    if (ship || !req.body.name) {
+        res.status(400).end("ship with the name " + req.body.name + " already exist");
+        return;
+    }
     race.ships.push(req.body);
-    res.send(201);
+    res.status(201).json(req.body);
+});
+exports.router.put('/', function (req, res) {
+    var group = _.find(result, function (group) {
+        return group.name === req.body.group;
+    });
+    if (!group) {
+        res.status(400).end("group " + req.body.group + " not found");
+        return;
+    }
+    var race = _.find(group.races, function (race) {
+        return race.name === req.body.race;
+    });
+    if (!race) {
+        res.status(400).end("race " + req.body.race + " not found");
+        return;
+    }
+    var ship = _.find(race.ships, function (ship) {
+        return ship.name === req.body.name;
+    });
+    if (!ship) {
+        res.status(400).end("ship with the name " + req.body.name + " not found");
+        return;
+    }
+    _.remove(race.ships, ship);
+    race.ships.push(req.body);
+    res.status(204).end();
 });
 function findRace(result, req) {
     var races = _.find(result, function (group) {
@@ -46,3 +90,5 @@ function findRace(result, req) {
         return race.name === req.params.raceId;
     });
 }
+exports.shipUpdateRouter = express.Router();
+exports.router.use('/', exports.shipUpdateRouter);
